@@ -7,6 +7,7 @@ import obd_sensors
 from datetime import datetime
 import time
 import getpass
+import os
 
 
 from obd_utils import scanSerial
@@ -105,4 +106,9 @@ o.connect()
 
 if not o.is_connected():
     print "Not connected"
-o.record_data()
+    if os.path.isfile(o.log_file.name):
+        os.remove(o.log_file.name)
+    else:    ## Show an error ##
+        print "Error: %s file not found" % str(o.log_file)
+else:    
+    o.record_data()
