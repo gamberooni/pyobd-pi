@@ -40,6 +40,7 @@ class OBD_Recorder():
             if(self.port.State == 0):
                 self.port.close()
                 self.port = None
+                self.remove_log_file()
             else:
                 break
 
@@ -114,6 +115,6 @@ o.connect()
 
 if not o.is_connected():
     print "Not connected"
-    self.remove_log_file()
+    o.remove_log_file()
 else:    
     o.record_data()
