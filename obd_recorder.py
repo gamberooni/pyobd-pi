@@ -59,6 +59,7 @@ class OBD_Recorder():
             
     def record_data(self):
         if(self.port is None):
+            self.remove_log_file()
             return None
         
         print "Logging started"
@@ -97,6 +98,13 @@ class OBD_Recorder():
         #print current_gear_ratio
         gear = min((abs(current_gear_ratio - i), i) for i in self.gear_ratios)[1] 
         return gear
+    
+    def remove_log_file(self):
+        if os.path.isfile(self.log_file.name):
+            os.remove(self.log_file.name)
+        else:    ## Show an error ##
+            print "Error: %s file not found" % str(self.log_file)      
+        
         
 username = getpass.getuser()  
 # logitems = ["rpm", "speed", "throttle_pos", "load", "fuel_status"]
@@ -106,9 +114,6 @@ o.connect()
 
 if not o.is_connected():
     print "Not connected"
-    if os.path.isfile(o.log_file.name):
-        os.remove(o.log_file.name)
-    else:    ## Show an error ##
-        print "Error: %s file not found" % str(o.log_file)
+    self.remove_log_file()
 else:    
     o.record_data()
