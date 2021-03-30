@@ -22,6 +22,7 @@ B, B, B, B, B, B, O, O
 ]
 
 def init_led():
+    sense.clear()
     sense.low_light = True
     sense.set_pixels(pepe)
     sense.flip_v()
@@ -31,8 +32,8 @@ def pepe_led():
     sleep(0.25) 
 
 init_led()
-for i in range(20):
+while 1:
     pepe_led()
 
-sense.clear()
-sense.set_pixel(0, 7, 0,0,255)
+#sense.clear()
+#sense.set_pixel(0, 7, 0,0,255)

@@ -34,6 +34,7 @@ B, B, B, B, B, B, O, O
 
 
 def init_led():
+    sense.clear()
     sense.low_light = True
     sense.set_pixels(pepe)
     sense.flip_v()
