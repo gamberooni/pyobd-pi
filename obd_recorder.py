@@ -40,7 +40,6 @@ class OBD_Recorder():
             if(self.port.State == 0):
                 self.port.close()
                 self.port = None
-                self.remove_log_file()
             else:
                 break
 
@@ -111,10 +110,15 @@ username = getpass.getuser()
 # logitems = ["rpm", "speed", "throttle_pos", "load", "fuel_status"]
 logitems = [i.shortname for i in obd_sensors.SENSORS]  # log data from all the available sensors
 o = OBD_Recorder('/home/'+username+'/pyobd-pi/log/', logitems)
-o.connect()
-
-if not o.is_connected():
-    print "Not connected"
+try:
+    o.connect()
+except:
     o.remove_log_file()
-else:    
-    o.record_data()
+    raise Exception('Not connected to OBD device')
+
+#if not o.is_connected():
+#    print "Not connected"
+#else:    
+#    o.record_data()
+    
+o.record_data()
