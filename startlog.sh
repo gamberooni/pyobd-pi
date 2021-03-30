@@ -1,6 +1,5 @@
 #!/bin/bash
 
-touch tmp/$(date).start
 n=0
 until [ "$n" -ge 8 ]
 do

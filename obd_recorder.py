@@ -8,12 +8,48 @@ from datetime import datetime
 import time
 import getpass
 import os
+from sense_hat import SenseHat
+from time import sleep
 
+
+USE_SENSE_HAT = 1
+
+R = [255, 0, 0]
+G = [0, 255, 0]
+B = [0, 0, 255]
+Bk = [0, 0, 0]
+O = [100, 100, 100]  # background
+W = [255, 255, 255]
+
+pepe = [
+O, O, O, O, O, O, O, O,
+O, G, G, O, O, G, G, O,
+G, G, G, G, G, G, G, O,
+G, G, W, Bk, G, W, Bk, O,
+G, G, G, G, G, G, G, O,
+B, G, R, R, R, R, R, O,
+B, G, G, G, G, G, O, O,
+B, B, B, B, B, B, O, O
+]
+
+
+def init_led():
+    sense.low_light = True
+    sense.set_pixels(pepe)
+    sense.flip_v()
+
+def pepe_led():
+    sense.flip_h()
+    sleep(0.25)
+    
 
 from obd_utils import scanSerial
 
 class OBD_Recorder():
     def __init__(self, path, log_items):
+        if USE_SENSE_HAT == 1:
+            sense.clear()
+            sense.set_pixel(0, 7, 255,0,0)
         self.port = None
         self.sensorlist = []
         localtime = time.localtime(time.time())
@@ -63,7 +99,6 @@ class OBD_Recorder():
             return None
         
         print "Logging started"
-        
         while 1:
             localtime = datetime.now()
             current_time = str(localtime.hour)+":"+str(localtime.minute)+":"+str(localtime.second)+"."+str(localtime.microsecond)
@@ -105,7 +140,7 @@ class OBD_Recorder():
         else:    ## Show an error ##
             print "Error: %s file not found" % str(self.log_file)      
         
-        
+sense = SenseHat()        
 username = getpass.getuser()  
 # logitems = ["rpm", "speed", "throttle_pos", "load", "fuel_status"]
 logitems = [i.shortname for i in obd_sensors.SENSORS]  # log data from all the available sensors
@@ -116,9 +151,15 @@ except:
     o.remove_log_file()
     raise Exception('Not connected to OBD device')
 
-#if not o.is_connected():
-#    print "Not connected"
-#else:    
-#    o.record_data()
+if not o.is_connected():
+    print "Not connected"
+else:
+    if USE_SENSE_HAT == 1:
+        init_led()
+        for i in range(20):
+            pepe_led()
+        sense.clear()
+        sense.set_pixel(0, 7, 0,0,255)
     
-o.record_data()
+    o.record_data()
+    
