@@ -21,7 +21,7 @@ class OBD_Recorder():
         self.log_file = open(filename, "w", 128)
         sensornames = [i.name for i in obd_sensors.SENSORS]
         sensors = ','.join(sensornames)
-        string = "Time," + sensors
+        string = "Time," + sensors + "\n"
         #self.log_file.write("Time,RPM,MPH,Throttle,Load,Fuel Status\n")
         self.log_file.write(string)
 
