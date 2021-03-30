@@ -1,9 +1,9 @@
 [Unit]
 Description=Start OBD logging on boot
-After=network.target
+After=graphical.target
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=bash startlog.sh
 WorkingDirectory=/home/pi/pyobd-pi
 StandardOutput=inherit
