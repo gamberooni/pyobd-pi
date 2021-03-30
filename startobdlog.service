@@ -4,11 +4,11 @@ After=graphical.target
 
 [Service]
 Type=simple
-ExecStart=bash startlog.sh
+ExecStart=startlog.sh
 WorkingDirectory=/home/pi/pyobd-pi
 StandardOutput=inherit
 StandardError=inherit
 User=pi
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
