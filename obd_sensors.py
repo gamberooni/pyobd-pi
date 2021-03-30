@@ -138,6 +138,12 @@ class Sensor:
 
 SENSORS = [
     Sensor("pids"                  , "Supported PIDs"				, "0100" , hex_to_bitstring ,""       ), 
+    Sensor("pids_21_to_40"         , "Supported PIDs 21 to 40"      , "0120" , hex_to_bitstring ,""       ),
+    Sensor("pids_41_to_60"         , "Supported PIDs 41 to 60"      , "0140" , hex_to_bitstring ,""       ),
+    Sensor("pids_61_to_80"         , "Supported PIDs 61 to 80"      , "0160" , hex_to_bitstring ,""       ),
+    Sensor("pids_81_to_A0"         , "Supported PIDs 81 to A0"      , "0180" , hex_to_bitstring ,""       ),
+    Sensor("pids_A1_to_C0"         , "Supported PIDs A1 to C0"      , "01A0" , hex_to_bitstring ,""       ),
+    Sensor("pids_C1_to_E0"         , "Supported PIDs C1 to E0"      , "01C0" , hex_to_bitstring ,""       ),    
     Sensor("dtc_status"            , "S-S DTC Cleared"				, "0101" , dtc_decrypt      ,""       ),    
     Sensor("dtc_ff"                , "DTC C-F-F"					, "0102" , cpass            ,""       ),      
     Sensor("fuel_status"           , "Fuel System Stat"				, "0103" , cpass            ,""       ),
@@ -169,12 +175,6 @@ SENSORS = [
     Sensor("o2_sensor_position_b"  , "Loc of O2 sensor" 			, "011D" , cpass            ,""       ),
     Sensor("aux_input"             , "Aux input status"				, "011E" , cpass            ,""       ),
     Sensor("engine_time"           , "Engine Start MIN"				, "011F" , sec_to_min       ,"min"    ),
-    Sensor("pids_21_to_40"         , "Supported PIDs 21 to 40"      , "0120" , hex_to_bitstring ,""       ),
-    Sensor("pids_41_to_60"         , "Supported PIDs 41 to 60"      , "0140" , hex_to_bitstring ,""       ),
-    Sensor("pids_61_to_80"         , "Supported PIDs 61 to 80"      , "0160" , hex_to_bitstring ,""       ),
-    Sensor("pids_81_to_A0"         , "Supported PIDs 81 to A0"      , "0180" , hex_to_bitstring ,""       ),
-    Sensor("pids_A1_to_C0"         , "Supported PIDs A1 to C0"      , "01A0" , hex_to_bitstring ,""       ),
-    Sensor("pids_C1_to_E0"         , "Supported PIDs C1 to E0"      , "01C0" , hex_to_bitstring ,""       ),
     Sensor("engine_mil_time"       , "Engine Run MIL"				, "014D" , sec_to_min       ,"min"    ),
     ]
      
