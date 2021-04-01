@@ -22,32 +22,79 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ###########################################################################
 
+def abs_evap_vapor_pres(code):
+    code = hex_to_int(code)
+    return code / 200.0
+
+def abs_load(code):
+    code = hex_to_int(code)
+    return code * 100 / 255
+
+def cat_temp(code):
+    code = hex_to_int(code)
+    return (code / 10.0) - 40.0
+
+def cpass(code):
+    code = hex_to_int(code)
+    return float(code)
+
+def egr_error_pct(code):
+    code = hex_to_int(code)
+    return code * 100.0 / 128.0 - 100.0
+
+def eng_fuel_rate(code):
+    code = hex_to_int(code)
+    return code / 20.0
+
+def equivalence_ratio(code):
+    code = hex_to_int(code)
+    return code * 2 / 65536
+
+def evap_vapor_pres(code):
+    code = hex_to_int(code)
+    return code / 4.0
+
+def evap_vapor_pres_2(code):
+    code = hex_to_int(code)
+    return code - 32767
+
+def fuel_inj_timing(code):
+    code = hex_to_int(code)
+    return code / 128.0 - 210.0
+
+def fuel_rail_abs_pres(code):
+    code = hex_to_int(code)
+    return code * 10
+
+def fuel_rail_gauge_pres(code):
+    code = hex_to_int(code)
+    return code * 10    
+
+def fuel_rail_pres(code):
+    code = hex_to_int(code)
+    return code * 0.079
+
+def fuel_trim_percent(code):
+    code = hex_to_int(code)
+    #return (code - 128.0) * 100.0 / 128
+    return (code - 128) * 100 / 128
+
 def hex_to_int(str):
     i = eval("0x" + str, {}, {})
     return i
 
+def intake_m_pres(code):
+    code = hex_to_int(code)
+    return code 
+
 def maf(code):
-    print "hex maf: " + str(code)
     code = hex_to_int(code)
-    print "dec maf: " + str(code)
-    return code * 0.00132276
+    return code / 100.0
 
-def throttle_pos(code):
+def max_airflow_rate(code):
     code = hex_to_int(code)
-    return code * 100.0 / 255.0
-
-def intake_m_pres(code): # in kPa
-    code = hex_to_int(code)
-    return code / 0.14504
+    return code * 10
   
-def rpm(code):
-    code = hex_to_int(code)
-    return code / 4
-
-def speed(code):
-    code = hex_to_int(code)
-    return code
-
 def percent_scale(code):
     code = hex_to_int(code)
     return code * 100.0 / 255.0
@@ -56,85 +103,26 @@ def percent_scale_offset(code):
     code = hex_to_int(code)
     return (code * 100.0 / 255.0) - 100.0
 
-def timing_advance(code):
+def rpm(code):
     code = hex_to_int(code)
-    return (code - 128) / 2.0
-
-def sec_to_min(code):
-    code = hex_to_int(code)
-    return code / 60
+    return code / 4.0
 
 def temp(code):
     code = hex_to_int(code)
     return code - 40 
 
-def cat_temp(code):
+def timing_advance(code):
     code = hex_to_int(code)
-    return (code / 10.0) - 40.0
-
-def cpass(code):
-    #fixme
-    return code
-
-def fuel_trim_percent(code):
-    code = hex_to_int(code)
-    #return (code - 128.0) * 100.0 / 128
-    return (code - 128) * 100 / 128
-
-def distance(code):
-    code = hex_to_int(code)    
-    return code
-
-def fuel_rail_pres(code):
-    code = hex_to_int(code)
-    return code * 0.079
-
-def fuel_rail_gauge_pres(code):
-    code = hex_to_int(code)
-    return code * 10    
-
-def equivalence_ratio(code):
-    code = hex_to_int(code)
-    return code * 2 / 65536
-
-def o2_current(code):
-    code = hex_to_int(code)
-    return code - 128
-
-def evap_vapor_pres(code):
-    code = hex_to_int(code)
-    return code / 4.0
+    return (code - 128) / 2.0
 
 def voltage(code):
     code = hex_to_int(code)
     return code / 1000.0
 
-def max_airflow_rate(code):
-    code = hex_to_int(code)
-    return code * 10
-
-def abs_evap_vapor_pres(code):
-    code = hex_to_int(code)
-    return code / 200.0
-
-def evap_vapor_pres_2(code):
-    code = hex_to_int(code)
-    return code * 256 - 32767
-
-def fuel_rail_abs_pres(code):
-    code = hex_to_int(code)
-    return 10 * 256 * code
-
-def fuel_inj_timing(code):
-    code = hex_to_int(code)
-    return code / 128.0 - 210.0
-
-def eng_fuel_rate(code):
-    code = hex_to_int(code)
-    return code / 20.0
-
 def dtc_decrypt(code):
     #first byte is byte after PID and without spaces
+    print "dtc decrpyt: " + code
+
     num = hex_to_int(code[:2]) #A byte
     res = []
 
@@ -162,8 +150,8 @@ def dtc_decrypt(code):
     
     res.append(((numD>>7)&0x01)) #EGR SystemC7  bit of different 
     
-    #return res
-    return "#"
+    return res
+    # return "#"
 
 def hex_to_bitstring(str):
     bitstring = ""
@@ -209,14 +197,14 @@ SENSORS = [
     Sensor("long_term_fuel_trim_1" , "L-T Fuel Trim"				, "0107" , fuel_trim_percent    ,"%"      ),
     Sensor("short_term_fuel_trim_2", "S-T Fuel Trim"				, "0108" , fuel_trim_percent    ,"%"      ),
     Sensor("long_term_fuel_trim_2" , "L-T Fuel Trim"				, "0109" , fuel_trim_percent    ,"%"      ),
-    Sensor("fuel_pressure"         , "FuelRail Pressure"			, "010A" , cpass                ,""       ),
-    Sensor("manifold_pressure"     , "Intk Manifold"				, "010B" , intake_m_pres        ,"psi"    ),
+    Sensor("fuel_pressure"         , "Fuel Pressure"			    , "010A" , 3*cpass              ,"kPa"    ),
+    Sensor("manifold_pressure"     , "Intake Manifold abs pressure" , "010B" , cpass                ,"kPa"    ),
     Sensor("rpm"                   , "Engine RPM"					, "010C" , rpm                  ,""       ),
-    Sensor("speed"                 , "Vehicle Speed"				, "010D" , speed                ,"KMH"    ),
-    Sensor("timing_advance"        , "Timing Advance"				, "010E" , timing_advance       ,"degrees"),
-    Sensor("intake_air_temp"       , "Intake Air Temp"				, "010F" , temp                 ,"F"      ),
-    Sensor("maf"                   , "AirFlow Rate(MAF)"			, "0110" , maf                  ,"lb/min" ),
-    Sensor("throttle_pos"          , "Throttle Position"			, "0111" , throttle_pos         ,"%"      ),
+    Sensor("speed"                 , "Vehicle Speed"				, "010D" , cpass                ,"KMH"    ),
+    Sensor("timing_advance"        , "Timing Advance"				, "010E" , timing_advance       ,"deg"    ),
+    Sensor("intake_air_temp"       , "Intake Air Temp"				, "010F" , temp                 ,"C"      ),
+    Sensor("maf"                   , "AirFlow Rate(MAF)"			, "0110" , maf                  ,"g/s"    ),
+    Sensor("throttle_pos"          , "Throttle Position"			, "0111" , percent_scale        ,"%"      ),
     Sensor("secondary_air_status"  , "2nd Air Status"				, "0112" , cpass                ,""       ),
     Sensor("o2_sensor_positions"   , "Loc of O2 sensors"			, "0113" , cpass                ,""       ),
     Sensor("o211"                  , "O2 Sensor: 1 - 1"				, "0114" , fuel_trim_percent    ,"%"      ),
@@ -230,9 +218,9 @@ SENSORS = [
     Sensor("obd_standard"          , "OBD Designation"				, "011C" , cpass                ,""       ),
     Sensor("o2_sensor_position_b"  , "Loc of O2 sensor" 			, "011D" , cpass                ,""       ),
     Sensor("aux_input"             , "Aux input status"				, "011E" , cpass                ,""       ),
-    Sensor("engine_time"           , "Engine Start MIN"				, "011F" , sec_to_min           ,"min"    ),
+    Sensor("engine_time"           , "Engine Start MIN"				, "011F" , cpass                ,"s"      ),
     Sensor("pids_21_to_40"         , "Supported PIDs 21 to 40"      , "0120" , hex_to_bitstring     ,""       ),
-    Sensor("distance_mil"          , "Distance Traveled with MIL on", "0121" , distance             ,"km"     ),
+    Sensor("distance_mil"          , "Distance Traveled with MIL on", "0121" , cpass                ,"km"     ),
     Sensor("fuel_rail_pres"        , "Fuel Rail Pressure"           , "0122" , fuel_rail_pres       ,"kPa"    ),
     Sensor("fuel_rail_gauge_pres"  , "Fuel Rail Gauge Pressure"     , "0123" , fuel_rail_gauge_pres ,"kPa"    ),
     Sensor("o21_ratio"             , "O2 Sensor: 1 - ratio"         , "0124" , equivalence_ratio    ,""       ),
@@ -244,29 +232,29 @@ SENSORS = [
     Sensor("o27_ratio"             , "O2 Sensor: 7 - ratio"         , "012A" , equivalence_ratio    ,""       ),
     Sensor("o28_ratio"             , "O2 Sensor: 8 - ratio"         , "012B" , equivalence_ratio    ,""       ),
     Sensor("cmd_egr"               , "Commanded EGR"                , "012C" , percent_scale        ,"%"      ),
-    Sensor("egr_error"             , "EGR Error"                    , "012D" , percent_scale        ,"%"      ),
+    Sensor("egr_error"             , "EGR Error"                    , "012D" , egr_error_pct        ,"%"      ),
     Sensor("cmd_evap_purge"        , "Commanded evap purge"         , "012E" , percent_scale        ,"%"      ),
     Sensor("fuel_tank_level_ip"    , "Fuel tank level input"        , "012F" , percent_scale        ,"%"      ),
     Sensor("code_cleared_warmups"  , "Code cleared warmups"         , "0130" , cpass                ,""       ),
-    Sensor("code_cleared_dist"     , "Code cleared distance"        , "0131" , distance             ,"km"     ),
+    Sensor("code_cleared_dist"     , "Code cleared distance"        , "0131" , cpass                ,"km"     ),
     Sensor("evap_sys_vapor_pres"   , "Evap system vapor pressure"   , "0132" , evap_vapor_pres      ,"Pa"     ),
     Sensor("abs_barometric_pres"   , "Abs barometric pressure"      , "0133" , cpass                ,""       ),
-    Sensor("o21_current"           , "O2 Sensor: 1 - current"       , "0134" , o2_current           ,"mA"     ),  # need to investigate
-    Sensor("o22_current"           , "O2 Sensor: 2 - current"       , "0135" , o2_current           ,"mA"     ),
-    Sensor("o23_current"           , "O2 Sensor: 3 - current"       , "0136" , o2_current           ,"mA"     ),
-    Sensor("o24_current"           , "O2 Sensor: 4 - current"       , "0137" , o2_current           ,"mA"     ),
-    Sensor("o25_current"           , "O2 Sensor: 5 - current"       , "0138" , o2_current           ,"mA"     ),
-    Sensor("o26_current"           , "O2 Sensor: 6 - current"       , "0139" , o2_current           ,"mA"     ),
-    Sensor("o27_current"           , "O2 Sensor: 7 - current"       , "013A" , o2_current           ,"mA"     ),
-    Sensor("o28_current"           , "O2 Sensor: 8 - current"       , "013B" , o2_current           ,"mA"     ),
+    Sensor("o21_current"           , "O2 Sensor: 1 - current"       , "0134" , equivalence_ratio    ,"%"     ),  # need to investigate
+    Sensor("o22_current"           , "O2 Sensor: 2 - current"       , "0135" , equivalence_ratio    ,"%"     ),
+    Sensor("o23_current"           , "O2 Sensor: 3 - current"       , "0136" , equivalence_ratio    ,"%"     ),
+    Sensor("o24_current"           , "O2 Sensor: 4 - current"       , "0137" , equivalence_ratio    ,"%"     ),
+    Sensor("o25_current"           , "O2 Sensor: 5 - current"       , "0138" , equivalence_ratio    ,"%"     ),
+    Sensor("o26_current"           , "O2 Sensor: 6 - current"       , "0139" , equivalence_ratio    ,"%"     ),
+    Sensor("o27_current"           , "O2 Sensor: 7 - current"       , "013A" , equivalence_ratio    ,"%"     ),
+    Sensor("o28_current"           , "O2 Sensor: 8 - current"       , "013B" , equivalence_ratio    ,"%"     ),
     Sensor("cat_temp11"            , "Catalyst temp: 1 - 1"         , "013C" , cat_temp             ,"C"      ),
     Sensor("cat_temp21"            , "Catalyst temp: 2 - 1"         , "013D" , cat_temp             ,"C"      ),
     Sensor("cat_temp12"            , "Catalyst temp: 1 - 2"         , "013E" , cat_temp             ,"C"      ),
     Sensor("cat_temp22"            , "Catalyst temp: 2 - 2"         , "013F" , cat_temp             ,"C"      ),
     Sensor("pids_41_to_60"         , "Supported PIDs 41 to 60"      , "0140" , hex_to_bitstring     ,""       ),
-    Sensor("drive_cycle_mon_stat"  , "Drive cycle monitor status"   , "0141" , hex_to_bitstring     ,""       ),
+    Sensor("drive_cycle_mon_stat"  , "Drive cycle monitor status"   , "0141" , cpass                ,""       ),  # not sure about this...
     Sensor("control_module_volt"   , "Control module voltage"       , "0142" , voltage              ,"%"      ),  
-    Sensor("abs_load"              , "Absolute load"                , "0143" , cpass                ,""       ),  # to fix
+    Sensor("abs_load"              , "Absolute load"                , "0143" , abs_load             ,""       ), 
     Sensor("cmd_air_fuel_ratio"    , "Commanded air-fuel Ratio"     , "0144" , equivalence_ratio    ,""       ),
     Sensor("rel_throttle_pos"      , "Rel throttle position"        , "0145" , percent_scale        ,"%"      ),
     Sensor("ambient_air_temp"      , "Ambient air temp"             , "0146" , temp                 ,"C"      ),
@@ -275,12 +263,12 @@ SENSORS = [
     Sensor("acc_pedal_pos_D"       , "Acc pedal pos D"              , "0149" , percent_scale        ,"%"      ),
     Sensor("acc_pedal_pos_E"       , "Acc pedal pos E"              , "014A" , percent_scale        ,"%"      ),
     Sensor("acc_pedal_pos_F"       , "Acc pedal pos F"              , "014B" , percent_scale        ,"%"      ),
-    Sensor("cmd_throttle_actuator" , "Commanded throttle actuator"  , "014C" , voltage              ,"V"      ),
+    Sensor("cmd_throttle_actuator" , "Commanded throttle actuator"  , "014C" , percent_scale        ,"V"      ),
     Sensor("engine_mil_time"       , "Engine Run MIL"				, "014D" , cpass                ,"min"    ),
     Sensor("code_cleared_time"     , "Time since codes cleared"     , "014E" , cpass                ,"min"    ),
     Sensor("max_values"            , "Max values"                   , "014F" , cpass                ,""       ),  # to fix
     Sensor("max_airflow_rate"      , "Max air flow rate"            , "0150" , max_airflow_rate     ,"g/s"    ),
-    Sensor("fuel_type"             , "Fuel type"                    , "0151" , cpass                ,""       ),
+    Sensor("fuel_type"             , "Fuel type"                    , "0151" , cpass                ,""       ),  # not sure
     Sensor("ethanol_fuel_pct"      , "Ethanol fuel percentage"      , "0152" , percent_scale        ,"%"      ),
     Sensor("abs_evap_vapor_pres"   , "Abs evap vapor pressure"      , "0153" , abs_evap_vapor_pres  ,"kPa"    ),
     Sensor("evap_vapor_pres"       , "Evap vapor pressure"          , "0154" , evap_vapor_pres_2    ,"Pa"     ),
