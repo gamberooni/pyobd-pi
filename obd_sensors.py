@@ -27,8 +27,9 @@ def hex_to_int(str):
     return i
 
 def maf(code):
+    print "hex maf: " + str(code)
     code = hex_to_int(code)
-    print "maf: " + code
+    print "dec maf: " + str(code)
     return code * 0.00132276
 
 def throttle_pos(code):

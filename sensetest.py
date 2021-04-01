@@ -29,7 +29,7 @@ def init_led():
 
 def pepe_led():
     sense.flip_h()
-    sleep(0.25) 
+    sleep(30) 
 
 init_led()
 while 1:

@@ -63,7 +63,7 @@ class OBD_Recorder():
         filename = path+"car-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
         self.log_file = open(filename, "w", 128)
         # sensornames = [i.name for i in obd_sensors.SENSORS]
-        supportedSensorNames = [s.name for s in self.supportedSensors[1]]  # create the columns of the log file
+        supportedSensorNames = [s[1].name for s in self.supportedSensors]  # create the columns of the log file
         string = "Time," + ','.join(supportedSensorNames) + "\n"
         #self.log_file.write("Time,RPM,MPH,Throttle,Load,Fuel Status\n")
         self.log_file.write(string)
@@ -101,35 +101,41 @@ class OBD_Recorder():
             
     def getSupportedSensorList(self):
         if(self.port is None):
+            print "Not connected to ECU when getting supported PIDs"
             return None  # nothing can be done if not connected
 
+        print "Connected to ECU. Getting supported PIDs..."
         #Find supported sensors - by getting PIDs from OBD
         # its a string of binary 01010101010101 
         # 1 means the sensor is supported        
         self.supp_01_20 = self.port.sensor(0)[1]
-        self.supp_21_40 = self.port.sensor(20)[1]
-        self.supp_41_60 = self.port.sensor(40)[1]
-        self.supp_61_80 = self.port.sensor(60)[1]
-        self.supp_81_A0 = self.port.sensor(80)[1]
-        self.supp_A1_C0 = self.port.sensor(100)[1]
-        self.supp_C1_E0 = self.port.sensor(120)[1]
+        self.supp_21_40 = self.port.sensor(32)[1]  # PID 20
+        self.supp_41_60 = self.port.sensor(64)[1]  # PID 40
+        # self.supp_61_80 = self.port.sensor(60)[1]
+        print "0120: " + str(self.supp_01_20)
+        print "2140: " + str(self.supp_21_40)
+        print "4160: " + str(self.supp_41_60)
+        
+        # self.supp_81_A0 = self.port.sensor(80)[1]
+        # self.supp_A1_C0 = self.port.sensor(100)[1]
+        # self.supp_C1_E0 = self.port.sensor(120)[1]
         self.supportedSensorList = []
         self.unsupportedSensorList = []
 
         self.loopPIDbinary(self.supp_01_20, 0)
-        self.loopPIDbinary(self.supp_21_40, 20)
-        self.loopPIDbinary(self.supp_41_60, 40)
-        self.loopPIDbinary(self.supp_61_80, 60)
-        self.loopPIDbinary(self.supp_81_A0, 80)
-        self.loopPIDbinary(self.supp_A1_C0, 100)
-        self.loopPIDbinary(self.supp_C1_E0, 120)
+        self.loopPIDbinary(self.supp_21_40, 32)
+        self.loopPIDbinary(self.supp_41_60, 64)
+        # self.loopPIDbinary(self.supp_61_80, 60)
+        # self.loopPIDbinary(self.supp_81_A0, 80)
+        # self.loopPIDbinary(self.supp_A1_C0, 100)
+        # self.loopPIDbinary(self.supp_C1_E0, 120)
 
         return self.supportedSensorList  # [[1, Sensor("dtc_status", ...)], [2, Sensor("dtc_ff", ...], ...]
 
 
     def loopPIDbinary(self, supp, offset):
         # loop through PIDs binary
-        for i in range(0, len(supp)):
+        for i in range(0, len(supp)-1):  # len(supp)-1 to exclude PID "Supported PID"
             idx = i + 1 + offset
             if supp[i] == "1":
                 # store index of sensor and sensor object
