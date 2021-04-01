@@ -109,6 +109,30 @@ def voltage(code):
     code = hex_to_int(code)
     return code / 1000.0
 
+def max_airflow_rate(code):
+    code = hex_to_int(code)
+    return code * 10
+
+def abs_evap_vapor_pres(code):
+    code = hex_to_int(code)
+    return code / 200.0
+
+def evap_vapor_pres_2(code):
+    code = hex_to_int(code)
+    return code * 256 - 32767
+
+def fuel_rail_abs_pres(code):
+    code = hex_to_int(code)
+    return 10 * 256 * code
+
+def fuel_inj_timing(code):
+    code = hex_to_int(code)
+    return code / 128.0 - 210.0
+
+def eng_fuel_rate(code):
+    code = hex_to_int(code)
+    return code / 20.0
+
 def dtc_decrypt(code):
     #first byte is byte after PID and without spaces
     num = hex_to_int(code[:2]) #A byte
@@ -255,6 +279,22 @@ SENSORS = [
     Sensor("engine_mil_time"       , "Engine Run MIL"				, "014D" , cpass                ,"min"    ),
     Sensor("code_cleared_time"     , "Time since codes cleared"     , "014E" , cpass                ,"min"    ),
     Sensor("max_values"            , "Max values"                   , "014F" , cpass                ,""       ),  # to fix
+    Sensor("max_airflow_rate"      , "Max air flow rate"            , "0150" , max_airflow_rate     ,"g/s"    ),
+    Sensor("fuel_type"             , "Fuel type"                    , "0151" , cpass                ,""       ),
+    Sensor("ethanol_fuel_pct"      , "Ethanol fuel percentage"      , "0152" , percent_scale        ,"%"      ),
+    Sensor("abs_evap_vapor_pres"   , "Abs evap vapor pressure"      , "0153" , abs_evap_vapor_pres  ,"kPa"    ),
+    Sensor("evap_vapor_pres"       , "Evap vapor pressure"          , "0154" , evap_vapor_pres_2    ,"Pa"     ),
+    Sensor("st0213"                , "Short term O2: 1 - 3"         , "0155" , fuel_trim_percent    ,"%"      ),
+    Sensor("lt0213"                , "Long term O2: 1 - 3"          , "0156" , fuel_trim_percent    ,"%"      ),
+    Sensor("sto224"                , "Short term O2: 2 - 4"         , "0157" , fuel_trim_percent    ,"%"      ),
+    Sensor("lto224"                , "Long term O2: 2 - 4"          , "0158" , fuel_trim_percent    ,"%"      ),
+    Sensor("fuel_rail_abs_pres"    , "Fuel rail abs pressure"       , "0159" , fuel_rail_abs_pres   ,"kPa"    ),
+    Sensor("rel_acc_pedal_pos"     , "Rel accelerator pedal pos"    , "015A" , percent_scale        ,"%"      ),
+    Sensor("bat_pack_life"         , "Battery pack life"            , "015B" , percent_scale        ,"%"      ),
+    Sensor("engine_oil_temp"       , "Engine oil temp"              , "015C" , temp                 ,"C"      ),
+    Sensor("fuel_injection_timing" , "Fuel injection timing"        , "015D" , fuel_inj_timing      ,"deg"    ),
+    Sensor("engine_fuel_rate"      , "Engine fuel rate"             , "015E" , eng_fuel_rate        ,"L/h"    ),
+    Sensor("emission_req"          , "Emission requirements"        , "015F" , cpass                ,""       ),
     Sensor("pids_61_to_80"         , "Supported PIDs 61 to 80"      , "0160" , hex_to_bitstring     ,""       ),
     # Sensor("pids_81_to_A0"         , "Supported PIDs 81 to A0"      , "0180" , hex_to_bitstring ,""       ),
     # Sensor("pids_A1_to_C0"         , "Supported PIDs A1 to C0"      , "01A0" , hex_to_bitstring ,""       ),
