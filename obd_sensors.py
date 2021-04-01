@@ -150,7 +150,7 @@ def dtc_decrypt(code):
     
     res.append(((numD>>7)&0x01)) #EGR SystemC7  bit of different 
     
-    return res
+    return res  # [number of dtc codes, mil on or off, on-board tests availability]
     # return "#"
 
 def hex_to_bitstring(str):
@@ -188,7 +188,7 @@ class Sensor:
 SENSORS = [
     # follows the actual OBD PIDs order in Wiki
     Sensor("pids"                  , "Supported PIDs"				, "0100" , hex_to_bitstring     ,""       ), 
-    Sensor("dtc_status"            , "S-S DTC Cleared"				, "0101" , dtc_decrypt          ,""       ),    
+    Sensor("dtc_status"            , "Status since DTC Cleared"		, "0101" , dtc_decrypt          ,""       ),    
     Sensor("dtc_ff"                , "DTC C-F-F"					, "0102" , cpass                ,""       ),      
     Sensor("fuel_status"           , "Fuel System Status"			, "0103" , cpass                ,""       ),
     Sensor("load"                  , "Calc Load Value"				, "0104" , percent_scale        ,""       ),    

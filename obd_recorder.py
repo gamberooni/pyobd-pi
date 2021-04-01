@@ -64,7 +64,7 @@ class OBD_Recorder():
         self.log_file = open(filename, "w", 128)
         # sensornames = [i.name for i in obd_sensors.SENSORS]
         supportedSensorNames = [s[1].name for s in self.supportedSensors]  # create the columns of the log file
-        string = "Time," + ','.join(supportedSensorNames) + "\n"
+        string = "Time," + ','.join(supportedSensorNames) + ",DTCs\n"
         #self.log_file.write("Time,RPM,MPH,Throttle,Load,Fuel Status\n")
         self.log_file.write(string)
 
@@ -109,12 +109,12 @@ class OBD_Recorder():
         # its a string of binary 01010101010101 
         # 1 means the sensor is supported        
         self.supp_01_20 = self.port.sensor(0)[1]
-        self.supp_21_40 = self.port.sensor(32)[1]  # PID 20
-        self.supp_41_60 = self.port.sensor(64)[1]  # PID 40
+        self.supp_21_40 = self.port.sensor(32)[1]  # PID 32
+        self.supp_41_60 = self.port.sensor(64)[1]  # PID 64
         # self.supp_61_80 = self.port.sensor(60)[1]
-        print "0120: " + str(self.supp_01_20)
-        print "2140: " + str(self.supp_21_40)
-        print "4160: " + str(self.supp_41_60)
+        print "PIDs 01 to 20: " + str(self.supp_01_20)
+        print "PIDs 21 to 40: " + str(self.supp_21_40)
+        print "PIDs 41 to 60: " + str(self.supp_41_60)
         
         # self.supp_81_A0 = self.port.sensor(80)[1]
         # self.supp_A1_C0 = self.port.sensor(100)[1]
@@ -156,14 +156,15 @@ class OBD_Recorder():
             log_string = current_time
             results = {}
             # for index in self.sensorlist:
-            for s in self.supportedSensors:
+            for s in self.supportedSensors:  # log the values of each PID one by one
                 (name, value, unit) = self.port.sensor(s[0])
                 log_string = log_string + ","+str(value)
                 # results[obd_sensors.SENSORS[index].shortname] = value;
-                results[s[1].shortname] = value;
+                results[s[1].shortname] = value
 
             gear = self.calculate_gear(results["rpm"], results["speed"])
-            log_string = log_string #+ "," + str(gear)
+            # log_string = log_string #+ "," + str(gear)
+            log_string = log_string + "," + obd_io.get_dtc()
             self.log_file.write(log_string+"\n")
 
             

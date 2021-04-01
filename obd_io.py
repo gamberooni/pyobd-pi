@@ -47,6 +47,7 @@ def decrypt_dtc_code(code):
         if len(current)<4:
             raise "Tried to decode bad DTC: %s" % code
 
+        # typecode is first half of first word of first byte - so need to bit shift to right by 2
         tc = obd_sensors.hex_to_int(current[0]) #typecode
         tc = tc >> 2
         if   tc == 0:
@@ -60,7 +61,8 @@ def decrypt_dtc_code(code):
         else:
             raise tc
 
-        dig1 = str(obd_sensors.hex_to_int(current[0]) & 3)
+        # digit 1 is the 2nd half of first word of first byte - grab only the last 2 bits by doing "& 0011"
+        dig1 = str(obd_sensors.hex_to_int(current[0]) & 3)  
         dig2 = str(obd_sensors.hex_to_int(current[1]))
         dig3 = str(obd_sensors.hex_to_int(current[2]))
         dig4 = str(obd_sensors.hex_to_int(current[3]))
