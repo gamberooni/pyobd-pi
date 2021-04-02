@@ -229,7 +229,7 @@ SENSORS = [
     Sensor("obd_standard"          , "OBD Designation"				, "011C" , cpass                ,""       ),
     Sensor("o2_sensor_position_b"  , "Loc of O2 sensor" 			, "011D" , cpass                ,""       ),
     Sensor("aux_input"             , "Aux input status"				, "011E" , cpass                ,""       ),
-    Sensor("engine_time"           , "Engine Start MIN"				, "011F" , cpass                ,"s"      ),
+    Sensor("engine_time"           , "Engine Start time"		    , "011F" , cpass                ,"s"      ),
     Sensor("pids_21_to_40"         , "Supported PIDs 21 to 40"      , "0120" , hex_to_bitstring     ,""       ),
     Sensor("distance_mil"          , "Distance Traveled with MIL on", "0121" , cpass                ,"km"     ),
     Sensor("fuel_rail_pres"        , "Fuel Rail Pressure"           , "0122" , fuel_rail_pres       ,"kPa"    ),

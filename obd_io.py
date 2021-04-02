@@ -269,20 +269,30 @@ class OBDPort:
           r = self.sensor(1)[1] #data
           dtcNumber = r[0]
           mil = r[1]
-          DTCCodes = []
-          
+          results = []
           
           print "Number of stored DTC:" + str(dtcNumber) + " MIL: " + str(mil)
           # get all DTC, 3 per mesg response
           
-          self.send_command(GET_DTC_COMMAND)
-          res = self.get_result()
-          print "DTC result: " + res
-          res = res.split(' ')
-          res = ''.join(res)
-          decrypted_dtc = decrypt_dtc_code(res)
-          print "decrypted dtc: " + decrypted_dtc
+          try: 
+            self.send_command(GET_DTC_COMMAND)
+            res = self.get_result()
+            # print "Get DTC result: " + res  # e.g. "43 00" 
+            res = res.split(' ')
+            res = ''.join(res)  # e.g. "4300"
+            results.append(str(res))
+          except: 
+            results.append("NODATA")
+
+          try:  
+            decrypted_dtc = decrypt_dtc_code(res)  # e.g. "C0300" when res=4300
+            # print "decrypted dtc: " + decrypted_dtc
+            results.append(decrypted_dtc)
+          except:
+            print "Bad code or there is more than one code"
+            results.append("NODATA")    
           
+          return ','.join(results)  # should return "DTC_before_decrypt, DTC"
           
           # for i in range(0, ((dtcNumber+2)/3)):
           #  self.send_command(GET_DTC_COMMAND)
@@ -320,7 +330,6 @@ class OBDPort:
           #    DTCCodes.append(["Passive",DTCStr])
               
           # return DTCCodes
-          return decrypted_dtc
               
      def clear_dtc(self):
          """Clears all DTCs and freeze frame data"""
