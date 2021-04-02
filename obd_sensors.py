@@ -62,6 +62,10 @@ def fuel_inj_timing(code):
     code = hex_to_int(code)
     return code / 128.0 - 210.0
 
+def fuel_pres(code):
+    code = hex_to_int(code)
+    return code * 3
+
 def fuel_rail_abs_pres(code):
     code = hex_to_int(code)
     return code * 10
@@ -197,7 +201,7 @@ SENSORS = [
     Sensor("long_term_fuel_trim_1" , "L-T Fuel Trim"				, "0107" , fuel_trim_percent    ,"%"      ),
     Sensor("short_term_fuel_trim_2", "S-T Fuel Trim"				, "0108" , fuel_trim_percent    ,"%"      ),
     Sensor("long_term_fuel_trim_2" , "L-T Fuel Trim"				, "0109" , fuel_trim_percent    ,"%"      ),
-    Sensor("fuel_pressure"         , "Fuel Pressure"			    , "010A" , 3*cpass              ,"kPa"    ),
+    Sensor("fuel_pressure"         , "Fuel Pressure"			    , "010A" , fuel_pres              ,"kPa"    ),
     Sensor("manifold_pressure"     , "Intake Manifold abs pressure" , "010B" , cpass                ,"kPa"    ),
     Sensor("rpm"                   , "Engine RPM"					, "010C" , rpm                  ,""       ),
     Sensor("speed"                 , "Vehicle Speed"				, "010D" , cpass                ,"KMH"    ),
