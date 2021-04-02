@@ -125,7 +125,7 @@ def voltage(code):
 
 def dtc_decrypt(code):
     #first byte is byte after PID and without spaces
-    print "dtc decrpyt: " + code
+    # print "dtc decrpyt: " + code
 
     num = hex_to_int(code[:2]) #A byte
     res = []
@@ -144,6 +144,10 @@ def dtc_decrypt(code):
     numB = hex_to_int(code[2:4]) #B byte
       
     for i in range(0,3):
+        # numB>>i is to check for B2-B0
+        # i.e. test availability
+        # numB>>(3+1) is to check for B6-B4
+        # i.e. test completeness
         res.append(((numB>>i)&0x01)+((numB>>(3+i))&0x02))
     
     numC = hex_to_int(code[4:6]) #C byte
@@ -153,6 +157,9 @@ def dtc_decrypt(code):
         res.append(((numC>>i)&0x01)+(((numD>>i)&0x01)<<1))
     
     res.append(((numD>>7)&0x01)) #EGR SystemC7  bit of different 
+    
+    res = [str(i) for i in res]
+    res = ''.join(res)
     
     return res  # [number of dtc codes, mil on or off, on-board tests availability]
     # return "#"

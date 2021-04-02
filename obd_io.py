@@ -43,31 +43,35 @@ def decrypt_dtc_code(code):
     """Returns the 5-digit DTC code from hex encoding"""
     dtc = []
     current = code
-    for i in range(0,3):
-        if len(current)<4:
-            raise "Tried to decode bad DTC: %s" % code
+    # for i in range(0,3):
+    if len(current)<4:
+        return "NODATA"
+        # raise Exception("Tried to decode bad DTC: %s" % code)
 
-        # typecode is first half of first word of first byte - so need to bit shift to right by 2
-        tc = obd_sensors.hex_to_int(current[0]) #typecode
-        tc = tc >> 2
-        if   tc == 0:
-            type = "P"
-        elif tc == 1:
-            type = "C"
-        elif tc == 2:
-            type = "B"
-        elif tc == 3:
-            type = "U"
-        else:
-            raise tc
+    # typecode is first half of first word of first byte - so need to bit shift to right by 2
+    tc = obd_sensors.hex_to_int(current[0]) #typecode
+    tc = tc >> 2
+    print "tc: " + str(tc)
+    if   tc == 0:
+        type = "P"
+    elif tc == 1:
+        type = "C"
+    elif tc == 2:
+        type = "B"
+    elif tc == 3:
+        type = "U"
+    else:
+        raise tc
 
-        # digit 1 is the 2nd half of first word of first byte - grab only the last 2 bits by doing "& 0011"
-        dig1 = str(obd_sensors.hex_to_int(current[0]) & 3)  
-        dig2 = str(obd_sensors.hex_to_int(current[1]))
-        dig3 = str(obd_sensors.hex_to_int(current[2]))
-        dig4 = str(obd_sensors.hex_to_int(current[3]))
-        dtc.append(type+dig1+dig2+dig3+dig4)
-        current = current[4:]
+    # digit 1 is the 2nd half of first word of first byte - grab only the last 2 bits by doing "& 0011"
+    dig1 = str(obd_sensors.hex_to_int(current[0]) & 3)  
+    dig2 = str(obd_sensors.hex_to_int(current[1]))
+    dig3 = str(obd_sensors.hex_to_int(current[2]))
+    dig4 = str(obd_sensors.hex_to_int(current[3]))
+    dtc.append(type+dig1+dig2+dig3+dig4)
+    dtc = ','.join(dtc)
+    print "DTC from get_dtc(): " + dtc
+    current = current[4:]
     return dtc
 #__________________________________________________________________________
 
@@ -270,42 +274,53 @@ class OBDPort:
           
           print "Number of stored DTC:" + str(dtcNumber) + " MIL: " + str(mil)
           # get all DTC, 3 per mesg response
-          for i in range(0, ((dtcNumber+2)/3)):
-            self.send_command(GET_DTC_COMMAND)
-            res = self.get_result()
-            print "DTC result:" + res
-            for i in range(0, 3):
-                val1 = hex_to_int(res[3+i*6:5+i*6])
-                val2 = hex_to_int(res[6+i*6:8+i*6]) #get DTC codes from response (3 DTC each 2 bytes)
-                val  = (val1<<8)+val2 #DTC val as int
+          
+          self.send_command(GET_DTC_COMMAND)
+          res = self.get_result()
+          print "DTC result: " + res
+          res = res.split(' ')
+          res = ''.join(res)
+          decrypted_dtc = decrypt_dtc_code(res)
+          print "decrypted dtc: " + decrypted_dtc
+          
+          
+          # for i in range(0, ((dtcNumber+2)/3)):
+          #  self.send_command(GET_DTC_COMMAND)
+          #  res = self.get_result()
+          #  print "DTC result:" + res
+          #  for i in range(0, 3):
+          #      val1 = hex_to_int(res[3+i*6:5+i*6])
+          #      val2 = hex_to_int(res[6+i*6:8+i*6]) #get DTC codes from response (3 DTC each 2 bytes)
+          #      val  = (val1<<8)+val2 #DTC val as int
                 
-                if val==0: #skip fill of last packet
-                  break
+          #      if val==0: #skip fill of last packet
+          #        break
                    
-                DTCStr=dtcLetters[(val&0xC000)>14]+str((val&0x3000)>>12)+str((val&0x0f00)>>8)+str((val&0x00f0)>>4)+str(val&0x000f)
+          #      DTCStr=dtcLetters[(val&0xC000)>14]+str((val&0x3000)>>12)+str((val&0x0f00)>>8)+str((val&0x00f0)>>4)+str(val&0x000f)
                 
-                DTCCodes.append(["Active",DTCStr])
+          #      DTCCodes.append(["Active",DTCStr])
           
           #read mode 7
-          self.send_command(GET_FREEZE_DTC_COMMAND)
-          res = self.get_result()
+          #self.send_command(GET_FREEZE_DTC_COMMAND)
+          #res = self.get_result()
           
-          if res[:7] == "NODATA": #no freeze frame
-            return DTCCodes
+          #if res[:7] == "NODATA": #no freeze frame
+          #  return DTCCodes
           
-          print "DTC freeze result:" + res
-          for i in range(0, 3):
-              val1 = hex_to_int(res[3+i*6:5+i*6])
-              val2 = hex_to_int(res[6+i*6:8+i*6]) #get DTC codes from response (3 DTC each 2 bytes)
-              val  = (val1<<8)+val2 #DTC val as int
+          #print "DTC freeze result:" + res
+          #for i in range(0, 3):
+          #    val1 = hex_to_int(res[3+i*6:5+i*6])
+          #    val2 = hex_to_int(res[6+i*6:8+i*6]) #get DTC codes from response (3 DTC each 2 bytes)
+          #    val  = (val1<<8)+val2 #DTC val as int
                 
-              if val==0: #skip fill of last packet
-                break
+          #    if val==0: #skip fill of last packet
+          #      break
                    
-              DTCStr=dtcLetters[(val&0xC000)>14]+str((val&0x3000)>>12)+str((val&0x0f00)>>8)+str((val&0x00f0)>>4)+str(val&0x000f)
-              DTCCodes.append(["Passive",DTCStr])
+          #    DTCStr=dtcLetters[(val&0xC000)>14]+str((val&0x3000)>>12)+str((val&0x0f00)>>8)+str((val&0x00f0)>>4)+str(val&0x000f)
+          #    DTCCodes.append(["Passive",DTCStr])
               
-          return DTCCodes
+          # return DTCCodes
+          return decrypted_dtc
               
      def clear_dtc(self):
          """Clears all DTCs and freeze frame data"""
