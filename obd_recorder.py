@@ -48,7 +48,7 @@ from obd_utils import scanSerial
 
 class OBD_Recorder():
     # def __init__(self, path, log_items):
-    def __init__(self, path):
+    def __init__(self, path, vin_filename):
         if USE_SENSE_HAT == 1:
             sense.clear()
             sense.set_pixel(0, 7, 255,0,0)
@@ -62,6 +62,13 @@ class OBD_Recorder():
         localtime = time.localtime(time.time())
 
         vin = self.port.get_vin()
+        vin_content = vin+"-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
+
+        if not os.path.exists(vin_path):
+            os.makedirs(vin_path)
+            
+        with open(vin_path+'vin_list.txt','a') as f:
+            output = f.write(vin_content)
         
         filename = path+"car-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
         self.log_file = open(filename, "w", 128)
@@ -222,7 +229,9 @@ username = getpass.getuser()
     
 #     o.record_data()
     
-o = OBD_Recorder('/home/'+username+'/pyobd-pi/log/')
+path = '/home/'+username+'/pyobd-pi/log/'
+vin_path = path + "vin/"
+o = OBD_Recorder(path, vin_path)
 
 if not o.is_connected():
     print "Not connected"

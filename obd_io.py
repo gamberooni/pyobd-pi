@@ -36,6 +36,7 @@ GET_DTC_COMMAND   = "03"
 CLEAR_DTC_COMMAND = "04"
 GET_FREEZE_DTC_COMMAND = "07"
 GET_VEHICLE_INFO_COMMAND = "09"
+GET_VIN_COMMAND = "0902"
 
 from debugEvent import debug_display
 
@@ -52,7 +53,6 @@ def decrypt_dtc_code(code):
     # typecode is first half of first word of first byte - so need to bit shift to right by 2
     tc = obd_sensors.hex_to_int(current[0]) #typecode
     tc = tc >> 2
-    print "tc: " + str(tc)
     if   tc == 0:
         type = "P"
     elif tc == 1:
@@ -261,11 +261,12 @@ class OBDPort:
 
      def get_vin(self):        
           try:
-            self.send_command(GET_VEHICLE_INFO_COMMAND)
-            vin = self.get_result() 
+            self.send_command(GET_VIN_COMMAND)
+            vin = self.get_result()
           except:
             vin = "NODATA"
-          print f"vin: {vin}"   
+          print "vin: " + vin
+          return vin
           
      #
      # fixme: j1979 specifies that the program should poll until the number
