@@ -56,12 +56,13 @@ class OBD_Recorder():
         try: 
             self.connect()
         except:
-            print "Not connected to OBD device"
-            exit()
-            
+            raise Exception("Not connected to OBD device")
         # self.sensorlist = []
         self.supportedSensors = self.getSupportedSensorList()
         localtime = time.localtime(time.time())
+
+        vin = self.port.get_vin()
+        
         filename = path+"car-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
         self.log_file = open(filename, "w", 128)
         # sensornames = [i.name for i in obd_sensors.SENSORS]
@@ -227,7 +228,6 @@ if not o.is_connected():
     print "Not connected"
     sense.clear()
     sense.set_pixel(0, 7, 255,0,0)
-    exit()
 else:
     if USE_SENSE_HAT == 1:
         init_pepe()

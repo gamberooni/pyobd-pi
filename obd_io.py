@@ -35,6 +35,7 @@ from obd_sensors import hex_to_int
 GET_DTC_COMMAND   = "03"
 CLEAR_DTC_COMMAND = "04"
 GET_FREEZE_DTC_COMMAND = "07"
+GET_VEHICLE_INFO_COMMAND = "09"
 
 from debugEvent import debug_display
 
@@ -257,6 +258,14 @@ class OBDPort:
               statusTrans.append(statusText[statusRes[i]]) 
          
          return statusTrans
+
+     def get_vin(self):        
+          try:
+            self.send_command(GET_VEHICLE_INFO_COMMAND)
+            vin = self.get_result() 
+          except:
+            vin = "NODATA"
+          print f"vin: {vin}"   
           
      #
      # fixme: j1979 specifies that the program should poll until the number
