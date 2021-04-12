@@ -78,6 +78,9 @@ def fuel_rail_pres(code):
     code = hex_to_int(code)
     return code * 0.079
 
+def fuel_status(code):
+    return code
+
 def fuel_trim_percent(code):
     code = hex_to_int(code)
     #return (code - 128.0) * 100.0 / 128
@@ -201,7 +204,7 @@ SENSORS = [
     Sensor("pids"                  , "Supported PIDs"				, "0100" , hex_to_bitstring     ,""       ), 
     Sensor("dtc_status"            , "Status since DTC Cleared"		, "0101" , dtc_decrypt          ,""       ),    
     Sensor("dtc_ff"                , "DTC C-F-F"					, "0102" , cpass                ,""       ),      
-    Sensor("fuel_status"           , "Fuel System Status"			, "0103" , cpass                ,""       ),
+    Sensor("fuel_status"           , "Fuel System Status"			, "0103" , fuel_status                ,""       ),
     Sensor("load"                  , "Calc Load Value"				, "0104" , percent_scale        ,""       ),    
     Sensor("temp"                  , "Coolant Temp"					, "0105" , temp                 ,"C"      ),
     Sensor("short_term_fuel_trim_1", "S-T Fuel Trim"				, "0106" , fuel_trim_percent    ,"%"      ),
