@@ -74,7 +74,7 @@ class OBD_Recorder():
         self.log_file = open(filename, "w", 128)
         # sensornames = [i.name for i in obd_sensors.SENSORS]
         supportedSensorNames = [s[1].name for s in self.supportedSensors]  # create the columns of the log file
-        string = "Time," + ','.join(supportedSensorNames) + ",DTC_bytes,DTC\n"
+        string = "Device_time," + ','.join(supportedSensorNames) + ",DTC_bytes,DTC\n"
         #self.log_file.write("Time,RPM,MPH,Throttle,Load,Fuel Status\n")
         self.log_file.write(string)
 
