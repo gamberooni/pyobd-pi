@@ -62,7 +62,7 @@ class OBD_Recorder():
         localtime = time.localtime(time.time())
 
         vin = self.port.get_vin()
-        vin_content = vin+"-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
+        vin_content = vin+"-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log\n"
 
         if not os.path.exists(vin_path):
             os.makedirs(vin_path)
