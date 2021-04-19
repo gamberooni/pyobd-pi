@@ -229,7 +229,8 @@ username = getpass.getuser()
     
 #     o.record_data()
     
-path = '/home/'+username+'/pyobd-pi/log/'
+today = datetime.today().strftime('%Y-%m-%d')    
+path = '/home/'+username+'/pyobd-pi/log/'+today+'/'
 vin_path = path + "vin/"
 o = OBD_Recorder(path, vin_path)
 
